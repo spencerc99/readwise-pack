@@ -9,7 +9,7 @@ import {
 } from "@codahq/packs-sdk";
 import type { GenericSyncTable } from "@codahq/packs-sdk";
 import type { Formula } from "@codahq/packs-sdk";
-import { bookSchema } from "./schemas";
+import { highlightSchema, bookSchema } from "./schemas";
 import {
   Continuation,
   SyncFormula,
@@ -24,16 +24,12 @@ export function apiUrl(path: string, params?: Record<string, any>): string {
   return withQueryParams(url, params || {});
 }
 
-// See if Readwise has given us the url of a next page of results.
-function nextUrlFromResponse(
-  path: string,
-  params: Record<string, any>,
-  response: FetchResponse<any>
-): string | undefined {
-  const nextPageUrl = response.body?.next;
-  if (nextPageUrl) {
-    return nextPageUrl;
-  }
+function mapBooks(books: ReadwiseBook[]) {
+  return books;
+}
+
+function mapHighlights(highlights) {
+  return highlights;
 }
 
 async function listBooks(
@@ -41,14 +37,36 @@ async function listBooks(
   context: ExecutionContext,
   continuation: Continuation | undefined
 ) {
+  console.log("Continuation: " + JSON.stringify(continuation, null, 2));
   const url = continuation
     ? (continuation.nextUrl as string)
     : apiUrl(`/books`);
+  console.log(`Fetching from ${url}`);
   const response = await context.fetcher.fetch({ method: "GET", url });
-  const { results } = response.body;
-  const nextUrl = nextUrlFromResponse("", {}, response);
+  const { results, next: nextUrl } = response.body;
+  console.log(response.body);
+  console.log("Next URL: " + nextUrl);
   return {
     result: mapBooks(results),
+    continuation: nextUrl ? { nextUrl } : undefined,
+  };
+}
+
+async function listHighlights(
+  [],
+  context: ExecutionContext,
+  continuation: Continuation | undefined
+) {
+  const url = continuation
+    ? (continuation.nextUrl as string)
+    : apiUrl(`/highlights`);
+  console.log(`Fetching from ${url}`);
+  const response = await context.fetcher.fetch({ method: "GET", url });
+  const { results, next: nextUrl } = response.body;
+  console.log(response.body);
+  console.log("Next URL: " + nextUrl);
+  return {
+    result: mapHighlights(results),
     continuation: nextUrl ? { nextUrl } : undefined,
   };
 }
@@ -57,10 +75,6 @@ export const formulas: Formula[] = [
   // Formula definitions go here, e.g.
   // makeStringFormula({ ... }),
 ];
-
-function mapBooks(books: ReadwiseBook[]) {
-  return books;
-}
 
 export const syncTables: GenericSyncTable[] = [
   // Sync table definitions go here, e.g.
@@ -84,6 +98,28 @@ export const syncTables: GenericSyncTable[] = [
     },
     // The resultType defines what will be returned in your Coda doc. Here, we're returning a simple text string.
     schema: bookSchema,
+  }),
+];
+  makeSyncTable({
+    // This is the name that will be called in the formula builder. Remember, your formula name cannot have spaces in it.
+    name: "GetHighlights",
+    identityName: "GetHighlights",
+
+    formula: {
+      name: "GetHighlights",
+      description: "get highlights from readwise.",
+      // If your formula requires one or more inputs, you’ll define them here.
+      // Here, we're creating a string input called “name”.
+      parameters: [],
+
+      // Everything inside this execute statement will happen anytime your Coda function is called in a doc.
+      // An array of all user inputs is always the 1st parameter.
+      execute: listHighlights,
+      // This indicates whether or not your sync table requires an account connection.
+      connectionRequirement: ConnectionRequirement.None,
+    },
+    // The resultType defines what will be returned in your Coda doc. Here, we're returning a simple text string.
+    schema: highlightSchema,
   }),
 ];
 

@@ -28,3 +28,25 @@ export const bookSchema = makeObjectSchema({
   },
   featured: ["id", "author", "title", "category", "updated", "sourceUrl"],
 });
+
+export const highlightSchema = makeObjectSchema({
+  type: ValueType.Object,
+  id: "id",
+  primary: "id",
+  properties: {
+    id: { type: ValueType.String },
+    text: { type: ValueType.String },
+    note: { type: ValueType.String },
+    url: {
+      type: ValueType.String,
+      codaType: ValueHintType.Url,
+    },
+    updated: { type: ValueType.String, codaType: ValueHintType.DateTime },
+    bookId: {
+      type: ValueType.String,
+      codaType: ValueHintType.ImageAttachment,
+      fromKey: "book_id",
+    },
+  },
+  featured: ["id", "text", "note", "url"],
+});
