@@ -4,13 +4,13 @@ import { formulas } from "./formulas";
 import { syncTables } from "./formulas";
 
 export const manifest: PackVersionDefinition = {
-  version: "2.0.3",
+  version: "5.0.9",
   formulaNamespace: "MyPack",
   // The substance of the pack, imported from other files.
   formulas,
   syncTables,
   formats,
-  systemConnectionAuthentication: {
+  defaultAuthentication: {
     type: AuthenticationType.CustomHeaderToken,
     headerName: "Authorization",
     tokenPrefix: "Token",

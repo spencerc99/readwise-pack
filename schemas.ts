@@ -44,7 +44,6 @@ export const highlightSchema = makeObjectSchema({
     updated: { type: ValueType.String, codaType: ValueHintType.DateTime },
     bookId: {
       type: ValueType.String,
-      codaType: ValueHintType.ImageAttachment,
       fromKey: "book_id",
     },
   },

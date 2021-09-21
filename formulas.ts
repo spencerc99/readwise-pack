@@ -32,39 +32,35 @@ function mapHighlights(highlights) {
   return highlights;
 }
 
-async function listBooks(
-  [],
-  context: ExecutionContext,
-  continuation: Continuation | undefined
-) {
+async function listBooks([], context: ExecutionContext) {
+  const { continuation } = context.sync;
   console.log("Continuation: " + JSON.stringify(continuation, null, 2));
   const url = continuation
     ? (continuation.nextUrl as string)
-    : apiUrl(`/books`);
+    : withQueryParams(apiUrl(`/books`), { page_size: 500 });
   console.log(`Fetching from ${url}`);
   const response = await context.fetcher.fetch({ method: "GET", url });
   const { results, next: nextUrl } = response.body;
   console.log(response.body);
   console.log("Next URL: " + nextUrl);
+  console.log(`Found ${results.length} books`);
   return {
     result: mapBooks(results),
     continuation: nextUrl ? { nextUrl } : undefined,
   };
 }
 
-async function listHighlights(
-  [],
-  context: ExecutionContext,
-  continuation: Continuation | undefined
-) {
+async function listHighlights([], context: ExecutionContext) {
+  const { continuation } = context.sync;
   const url = continuation
     ? (continuation.nextUrl as string)
-    : apiUrl(`/highlights`);
+    : withQueryParams(apiUrl(`/highlights`), { page_size: 1000 });
   console.log(`Fetching from ${url}`);
   const response = await context.fetcher.fetch({ method: "GET", url });
   const { results, next: nextUrl } = response.body;
   console.log(response.body);
   console.log("Next URL: " + nextUrl);
+  console.log(`Found ${results.length} highlights`);
   return {
     result: mapHighlights(results),
     continuation: nextUrl ? { nextUrl } : undefined,
@@ -99,7 +95,6 @@ export const syncTables: GenericSyncTable[] = [
     // The resultType defines what will be returned in your Coda doc. Here, we're returning a simple text string.
     schema: bookSchema,
   }),
-];
   makeSyncTable({
     // This is the name that will be called in the formula builder. Remember, your formula name cannot have spaces in it.
     name: "GetHighlights",
