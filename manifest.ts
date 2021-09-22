@@ -4,7 +4,7 @@ import { formulas } from "./formulas";
 import { syncTables } from "./formulas";
 
 export const manifest: PackVersionDefinition = {
-  version: "5.0.9",
+  version: "6.0.10",
   formulaNamespace: "MyPack",
   // The substance of the pack, imported from other files.
   formulas,

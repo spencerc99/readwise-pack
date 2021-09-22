@@ -5,6 +5,7 @@ import {
   Format,
   makeSyncTable,
   newPack,
+  ParameterType,
   withQueryParams,
 } from "@codahq/packs-sdk";
 import type { GenericSyncTable } from "@codahq/packs-sdk";
@@ -12,6 +13,8 @@ import type { Formula } from "@codahq/packs-sdk";
 import { highlightSchema, bookSchema } from "./schemas";
 import {
   Continuation,
+  makeFormula,
+  makeObjectFormula,
   SyncFormula,
   SyncFormulaResult,
 } from "@codahq/packs-sdk/dist/api";
@@ -90,7 +93,7 @@ export const syncTables: GenericSyncTable[] = [
       // An array of all user inputs is always the 1st parameter.
       execute: listBooks,
       // This indicates whether or not your sync table requires an account connection.
-      connectionRequirement: ConnectionRequirement.None,
+      connectionRequirement: ConnectionRequirement.Required,
     },
     // The resultType defines what will be returned in your Coda doc. Here, we're returning a simple text string.
     schema: bookSchema,
@@ -111,7 +114,7 @@ export const syncTables: GenericSyncTable[] = [
       // An array of all user inputs is always the 1st parameter.
       execute: listHighlights,
       // This indicates whether or not your sync table requires an account connection.
-      connectionRequirement: ConnectionRequirement.None,
+      connectionRequirement: ConnectionRequirement.Required,
     },
     // The resultType defines what will be returned in your Coda doc. Here, we're returning a simple text string.
     schema: highlightSchema,
