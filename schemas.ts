@@ -6,8 +6,8 @@ import { makeObjectSchema, ValueHintType, ValueType } from "@codahq/packs-sdk";
 
 export const bookSchema = makeObjectSchema({
   type: ValueType.Object,
-  id: "id",
-  primary: "title",
+  idProperty: "id",
+  displayProperty: "title",
   properties: {
     id: { type: ValueType.String },
     title: { type: ValueType.String },
@@ -26,13 +26,20 @@ export const bookSchema = makeObjectSchema({
     },
     asin: { type: ValueType.String },
   },
-  featured: ["id", "author", "title", "category", "updated", "sourceUrl"],
+  featuredProperties: [
+    "id",
+    "author",
+    "title",
+    "category",
+    "updated",
+    "sourceUrl",
+  ],
 });
 
 export const highlightSchema = makeObjectSchema({
   type: ValueType.Object,
-  id: "id",
-  primary: "id",
+  idProperty: "id",
+  displayProperty: "id",
   properties: {
     id: { type: ValueType.String },
     text: { type: ValueType.String },
@@ -47,5 +54,5 @@ export const highlightSchema = makeObjectSchema({
       fromKey: "book_id",
     },
   },
-  featured: ["id", "text", "note", "url"],
+  featuredProperties: ["id", "text", "note", "url"],
 });
