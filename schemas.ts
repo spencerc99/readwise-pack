@@ -34,7 +34,6 @@ export const bookSchema = makeObjectSchema({
   },
   featuredProperties: [
     "author",
-    "title",
     "category",
     "updated",
     "sourceUrl",
