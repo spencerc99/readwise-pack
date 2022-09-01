@@ -2,15 +2,21 @@
  * Schemas for your formulas and sync table go here, e.g.
  */
 
-import { makeObjectSchema, ValueHintType, ValueType } from "@codahq/packs-sdk";
+import {
+  makeObjectSchema,
+  makeReferenceSchemaFromObjectSchema,
+  ValueHintType,
+  ValueType,
+} from "@codahq/packs-sdk";
 
 export const bookSchema = makeObjectSchema({
   type: ValueType.Object,
   idProperty: "id",
   displayProperty: "title",
+  identity: { name: "Book" },
   properties: {
-    id: { type: ValueType.String },
-    title: { type: ValueType.String },
+    id: { type: ValueType.String, required: true },
+    title: { type: ValueType.String, required: true },
     author: { type: ValueType.String },
     category: { type: ValueType.String },
     updated: { type: ValueType.String, codaType: ValueHintType.DateTime },
@@ -27,21 +33,30 @@ export const bookSchema = makeObjectSchema({
     asin: { type: ValueType.String },
   },
   featuredProperties: [
-    "id",
     "author",
     "title",
     "category",
     "updated",
     "sourceUrl",
+    "coverImageUrl",
   ],
+});
+
+export const tagSchema = makeObjectSchema({
+  idProperty: "id",
+  displayProperty: "name",
+  properties: {
+    id: { type: ValueType.String, required: true },
+    name: { type: ValueType.String, required: true },
+  },
 });
 
 export const highlightSchema = makeObjectSchema({
   type: ValueType.Object,
   idProperty: "id",
-  displayProperty: "id",
+  displayProperty: "text",
   properties: {
-    id: { type: ValueType.String },
+    id: { type: ValueType.String, required: true },
     text: { type: ValueType.String },
     note: { type: ValueType.String },
     url: {
@@ -53,6 +68,8 @@ export const highlightSchema = makeObjectSchema({
       type: ValueType.String,
       fromKey: "book_id",
     },
+    book: makeReferenceSchemaFromObjectSchema(bookSchema),
+    tags: { type: ValueType.Array, items: tagSchema },
   },
-  featuredProperties: ["id", "text", "note", "url"],
+  featuredProperties: ["note", "url", "updated"],
 });

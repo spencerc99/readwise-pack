@@ -26,7 +26,10 @@ function mapBooks(books: ReadwiseBook[]) {
 }
 
 function mapHighlights(highlights) {
-  return highlights;
+  return highlights.map((h) => ({
+    ...h,
+    book: { id: h.book_id, title: h.book_id },
+  }));
 }
 
 async function listBooks([], context: coda.ExecutionContext) {
@@ -67,7 +70,7 @@ async function listHighlights([], context: coda.ExecutionContext) {
 pack.addSyncTable({
   // This is the name that will be called in the formula builder. Remember, your formula name cannot have spaces in it.
   name: "Books",
-  identityName: "Books",
+  identityName: "Book",
 
   formula: {
     name: "GetBooks",
@@ -88,7 +91,7 @@ pack.addSyncTable({
 pack.addSyncTable({
   // This is the name that will be called in the formula builder. Remember, your formula name cannot have spaces in it.
   name: "Highlights",
-  identityName: "Highlights",
+  identityName: "Highlight",
 
   formula: {
     name: "GetHighlights",
