@@ -56,8 +56,8 @@ export const highlightSchema = makeObjectSchema({
   displayProperty: "text",
   properties: {
     id: { type: ValueType.String, required: true },
-    text: { type: ValueType.String },
-    note: { type: ValueType.String },
+    text: { type: ValueType.String, codaType: ValueHintType.Markdown },
+    note: { type: ValueType.String, codaType: ValueHintType.Markdown },
     url: {
       type: ValueType.String,
       codaType: ValueHintType.Url,
