@@ -42,8 +42,6 @@ async function listBooks([], context: coda.ExecutionContext) {
   const response = await context.fetcher.fetch({ method: "GET", url });
   const { results, next: nextUrl } = response.body;
   console.log(response.body);
-  console.log("Next URL: " + nextUrl);
-  console.log(`Found ${results.length} books`);
   return {
     result: mapBooks(results),
     continuation: nextUrl ? { nextUrl } : undefined,
@@ -59,8 +57,6 @@ async function listHighlights([], context: coda.ExecutionContext) {
   const response = await context.fetcher.fetch({ method: "GET", url });
   const { results, next: nextUrl } = response.body;
   console.log(response.body);
-  console.log("Next URL: " + nextUrl);
-  console.log(`Found ${results.length} highlights`);
   return {
     result: mapHighlights(results),
     continuation: nextUrl ? { nextUrl } : undefined,
@@ -74,7 +70,7 @@ pack.addSyncTable({
 
   formula: {
     name: "GetBooks",
-    description: "get books from readwise.",
+    description: "Get a list of all books from Readwise.",
     // If your formula requires one or more inputs, you’ll define them here.
     // Here, we're creating a string input called “name”.
     parameters: [],
@@ -95,7 +91,7 @@ pack.addSyncTable({
 
   formula: {
     name: "GetHighlights",
-    description: "get highlights from readwise.",
+    description: "Get a list of all highlights from Readwise.",
     // If your formula requires one or more inputs, you’ll define them here.
     // Here, we're creating a string input called “name”.
     parameters: [],
